@@ -51,4 +51,5 @@ public class PessoaService {
                 .orElseThrow(() -> new RuntimeException("Pessoa não encontrada com o id: " + id));
         pessoaRepository.delete(pessoa);
     }
+
 }

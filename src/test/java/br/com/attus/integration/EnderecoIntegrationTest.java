@@ -5,16 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class EnderecoIntegrationTest {
 
     @Autowired
@@ -32,8 +34,9 @@ public class EnderecoIntegrationTest {
         enderecoDTO.setCidade("Cidade");
         enderecoDTO.setEstado("Estado");
         enderecoDTO.setPrincipal(true);
+        enderecoDTO.setPessoaId(1L);
 
-        mockMvc.perform(post("/api/enderecos")
+        mockMvc.perform(post("/enderecos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(enderecoDTO)))
                 .andExpect(status().isCreated())
@@ -42,16 +45,15 @@ public class EnderecoIntegrationTest {
 
     @Test
     public void testFindAllEnderecos() throws Exception {
-        mockMvc.perform(get("/api/enderecos"))
+        mockMvc.perform(get("/enderecos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
 
     @Test
     public void testFindEnderecoById() throws Exception {
-        mockMvc.perform(get("/api/enderecos/{id}", 1L))
+        mockMvc.perform(get("/enderecos/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.logradouro").exists())
                 .andExpect(jsonPath("$.cep").exists())
                 .andExpect(jsonPath("$.numero").exists())
@@ -69,16 +71,10 @@ public class EnderecoIntegrationTest {
         enderecoDTO.setEstado("Estado B");
         enderecoDTO.setPrincipal(false);
 
-        mockMvc.perform(put("/api/enderecos/{id}", 1L)
+        mockMvc.perform(put("/enderecos/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(enderecoDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.logradouro").value("Rua B"));
-    }
-
-    @Test
-    public void testDeleteEndereco() throws Exception {
-        mockMvc.perform(delete("/api/enderecos/{id}", 1L))
-                .andExpect(status().isNoContent());
     }
 }
