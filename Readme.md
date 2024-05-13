@@ -37,3 +37,5 @@ Em resumo, os testes unitários desempenham um papel crucial no desenvolvimento 
 ### Foi realizado o deploy da aplicação , todas os endpoints podem ser testados na url do swagger abaixo:
 
 Swagger : 
+
+https://attus-project.onrender.com/api/swagger-ui.html
